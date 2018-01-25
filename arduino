@@ -17,13 +17,13 @@
 #define pinlimitswitchY 15
 #define pinlimitswitchZ 19
 
-String a;
-int x = 0, y = 0, z = 0;
+String tekst;
+int x = 0, y = 0, z = 0, flaga = 1;
 bool buttonx = 0;
 bool buttony = 0;
 bool buttonz = 0;
 void setup() {
-  Serial.begin(9600);
+  
 
   pinMode(pinlimitswitchX, INPUT);
   pinMode(pinlimitswitchY, INPUT);
@@ -56,22 +56,23 @@ void setup() {
   pinMode(Z_CS_PIN, OUTPUT);
   digitalWrite(Z_CS_PIN, HIGH);
   pinMode(Z_STEP_PIN, OUTPUT);
+  Serial.begin(9600);
 }
 
 void loop() {
   buttonx = digitalRead(pinlimitswitchX);
   buttony = digitalRead(pinlimitswitchY);
   buttonz = digitalRead(pinlimitswitchZ);
+  //x=0;
+ // y=0;
+  //z=0;
   while (Serial.available())
   {
     Serial.setTimeout(100);
-    a = Serial.readString();
-    sscanf(a.c_str(), "x %d y %d z %d", &x, &y, &z);
-
-    Serial.println(x);
-    Serial.println(y);
-    Serial.println(z);
-
+    tekst = Serial.readStringUntil('\n');
+    sscanf(tekst.c_str(), "x %d y %d z %d", &x, &y, &z );
+    flaga=0;
+   
     if (x < 0)
     {
 
@@ -126,6 +127,10 @@ void loop() {
   {
     digitalWrite(Z_STEP_PIN, HIGH);
     z--;
+  }
+  if(x==0 && y==0 && z==0 && flaga==0){
+  Serial.println("OK");
+  flaga = 1;
   }
   delayMicroseconds(2000);
 
